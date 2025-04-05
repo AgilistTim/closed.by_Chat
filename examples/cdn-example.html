@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Widget CDN Example</title>
+    
+    <!-- Chat Widget CSS from CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AgilistTim/closed.by_Chat@v1.0.0/dist/chat-widget.min.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .demo-section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+        }
+
+        .theme-selector {
+            margin: 20px 0;
+        }
+
+        .theme-button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .blue-theme {
+            background: #2196F3;
+            color: white;
+        }
+
+        .green-theme {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .purple-theme {
+            background: #9C27B0;
+            color: white;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chat Widget CDN Example</h1>
+        
+        <div class="demo-section">
+            <h2>Live Demo</h2>
+            <p>The chat widget is loaded from CDN and appears in the bottom-right corner. Try clicking the chat icon!</p>
+            
+            <div class="theme-selector">
+                <h3>Try Different Themes</h3>
+                <button class="theme-button blue-theme" onclick="changeTheme('#2196F3')">Blue Theme</button>
+                <button class="theme-button green-theme" onclick="changeTheme('#4CAF50')">Green Theme</button>
+                <button class="theme-button purple-theme" onclick="changeTheme('#9C27B0')">Purple Theme</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Implementation</h2>
+            <p>To add this chat widget to your website, include these two lines in your HTML:</p>
+            <pre><code>&lt;!-- In the &lt;head&gt; --&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AgilistTim/closed.by_Chat@v1.0.0/dist/chat-widget.min.css"&gt;
+
+&lt;!-- Before &lt;/body&gt; --&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/AgilistTim/closed.by_Chat@v1.0.0/dist/chat-widget.min.js"&gt;&lt;/script&gt;</code></pre>
+            
+            <p>Then initialize the widget:</p>
+            <pre><code>const chatWidget = new ChatWidget({
+    position: 'bottom-right',
+    theme: {
+        primary: '#2196F3',
+        secondary: '#ffffff',
+        text: '#000000'
+    },
+    title: 'Chat With Us',
+    greeting: 'Hello! 👋 How can I help you today?',
+    placeholder: 'Type your message...',
+    endpoint: 'your-webhook-url'
+});</code></pre>
+        </div>
+    </div>
+
+    <!-- Chat Widget JS from CDN -->
+    <script src="https://cdn.jsdelivr.net/gh/AgilistTim/closed.by_Chat@v1.0.0/dist/chat-widget.min.js"></script>
+    <script>
+        // Initialize the chat widget
+        const chatWidget = new ChatWidget({
+            position: 'bottom-right',
+            theme: {
+                primary: '#2196F3',
+                secondary: '#ffffff',
+                text: '#000000'
+            },
+            title: 'Chat With Us',
+            greeting: 'Hello! 👋 How can I help you today?',
+            placeholder: 'Type your message...',
+            endpoint: 'https://closedbyrick.app.n8n.cloud/webhook/9147e53d-f8f7-4ade-8336-633759855053/chat'
+        });
+
+        // Function to change the widget theme
+        function changeTheme(color) {
+            chatWidget.updateTheme({
+                primary: color,
+                secondary: '#ffffff',
+                text: '#000000'
+            });
+        }
+
+        // Optional: Event listeners for demonstration
+        chatWidget.on('message_sent', (message) => {
+            console.log('Message sent:', message);
+        });
+
+        chatWidget.on('message_received', (message) => {
+            console.log('Message received:', message);
+        });
+
+        chatWidget.on('message_error', (error) => {
+            console.error('Error:', error);
+        });
+    </script>
+</body>
+</html> 
