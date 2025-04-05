@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Widget Example</title>
+    
+    <!-- Chat Widget CSS -->
+    <link rel="stylesheet" href="https://cdn.example.com/chat-widget.css">
+</head>
+<body>
+    <h1>Chat Widget Example</h1>
+    <p>The chat widget should appear in the bottom-right corner.</p>
+
+    <!-- Chat Widget JS -->
+    <script src="https://cdn.example.com/chat-widget.js"></script>
+    <script>
+        // Initialize the chat widget with custom options
+        const chatWidget = new ChatWidget({
+            position: 'bottom-right',
+            theme: {
+                primary: '#2196F3',
+                secondary: '#ffffff',
+                text: '#000000'
+            },
+            title: 'Chat With Us',
+            greeting: 'Hello! 👋 How can I help you today?',
+            placeholder: 'Type your message...',
+            endpoint: 'https://closedbyrick.app.n8n.cloud/webhook/9147e53d-f8f7-4ade-8336-633759855053/chat'
+        });
+
+        // Optional: Listen to events
+        chatWidget.on('message_sent', (message) => {
+            console.log('Message sent:', message);
+        });
+
+        chatWidget.on('message_received', (message) => {
+            console.log('Message received:', message);
+        });
+
+        chatWidget.on('message_error', (error) => {
+            console.error('Error:', error);
+        });
+    </script>
+</body>
+</html> 

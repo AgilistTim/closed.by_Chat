@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Webhook Test</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .error { color: red; }
+        .success { color: green; }
+        pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
+        button { padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h2>N8N Webhook Test</h2>
+    <button onclick="testWebhook()">Test Connection</button>
+    <div id="result">Click button to test connection</div>
+
+    <script>
+        // Test the webhook connection
+        async function testWebhook() {
+            const endpoint = 'https://closedbyrick.app.n8n.cloud/webhook/9147e53d-f8f7-4ade-8336-633759855053/chat';
+            const resultDiv = document.getElementById('result');
+            
+            // Show testing message
+            resultDiv.innerHTML = '<p>Testing connection...</p>';
+            
+            try {
+                // Now try the actual POST request with correct format
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    mode: 'cors',
+                    credentials: 'omit',
+                    body: JSON.stringify({
+                        action: "sendMessage",
+                        sessionId: "test_session_" + Date.now(),
+                        chatInput: "Hello, this is a test message"
+                    })
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', [...response.headers.entries()]);
+
+                const responseText = await response.text();
+                console.log('Raw response:', responseText);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}\nResponse: ${responseText}`);
+                }
+
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    throw new Error(`Invalid JSON response: ${responseText}`);
+                }
+
+                resultDiv.innerHTML = `
+                    <p class="success">✓ Connection successful!</p>
+                    <p>Status: ${response.status}</p>
+                    <p>Response:</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                console.error('Test failed:', error);
+                
+                resultDiv.innerHTML = `
+                    <p class="error">✗ Connection failed</p>
+                    <p>Error: ${error.message}</p>
+                    <p>Troubleshooting steps:</p>
+                    <ul>
+                        <li>Check browser console for detailed error logs</li>
+                        <li>Verify N8N webhook URL: <code>${endpoint}</code></li>
+                        <li>Ensure N8N workflow is:</li>
+                        <ul>
+                            <li>Active and running</li>
+                            <li>Configured to accept POST requests</li>
+                            <li>Expects the correct message format</li>
+                            <li>Returns JSON response with 'output' field</li>
+                        </ul>
+                    </ul>
+                    <p>Technical Details:</p>
+                    <pre>${error.stack || error.message}</pre>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 

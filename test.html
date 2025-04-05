@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Widget Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .test-controls {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976D2;
+        }
+        .theme-selector {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Chat Widget Test Page</h1>
+        <p>This page demonstrates the chat widget functionality. The widget should appear in the bottom-right corner.</p>
+        
+        <div class="test-controls">
+            <h3>Test Controls</h3>
+            <div class="theme-selector">
+                <button onclick="changeTheme('#2196F3')">Blue Theme</button>
+                <button onclick="changeTheme('#4CAF50')">Green Theme</button>
+                <button onclick="changeTheme('#FF5722')">Orange Theme</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the chat widget script -->
+    <script src="chat.js"></script>
+    <script>
+        // Initialize the chat widget
+        let chatWidget = new ChatWidget({
+            position: 'bottom-right',
+            theme: {
+                primary: '#2196F3',
+                secondary: '#ffffff',
+                text: '#000000'
+            },
+            title: 'Test Chat',
+            greeting: 'Hello! This is a test chat. Try sending a message!',
+            placeholder: 'Type a test message...'
+        });
+
+        // Function to change the theme
+        function changeTheme(color) {
+            chatWidget = new ChatWidget({
+                position: 'bottom-right',
+                theme: {
+                    primary: color,
+                    secondary: '#ffffff',
+                    text: '#000000'
+                },
+                title: 'Test Chat',
+                greeting: 'Theme changed! Try sending a message!',
+                placeholder: 'Type a test message...'
+            });
+        }
+    </script>
+</body>
+</html> 
