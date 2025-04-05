@@ -1,0 +1,30 @@
+{
+  "name": "closed-by-chat",
+  "version": "1.0.0",
+  "description": "A lightweight, customizable chat widget",
+  "main": "dist/chat-widget.min.js",
+  "scripts": {
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "terser src/chat-widget.js -c -m -o dist/chat-widget.min.js",
+    "build:css": "cleancss -o dist/chat-widget.min.css src/chat-widget.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AgilistTim/closed.by_Chat.git"
+  },
+  "keywords": [
+    "chat",
+    "widget",
+    "javascript"
+  ],
+  "author": "Tim Robinson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AgilistTim/closed.by_Chat/issues"
+  },
+  "homepage": "https://github.com/AgilistTim/closed.by_Chat#readme",
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "terser": "^5.29.2"
+  }
+} 

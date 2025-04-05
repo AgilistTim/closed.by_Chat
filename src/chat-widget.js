@@ -1,8 +1,3 @@
-/**
- * ChatWidget - A lightweight, customizable chat widget
- * @version 1.0.0
- * @license MIT
- */
 class ChatWidget {
     constructor(options = {}) {
         this.options = {
@@ -46,6 +41,15 @@ class ChatWidget {
     updateConnectionStatus(isConnected) {
         const statusIndicator = document.createElement('div');
         statusIndicator.className = `chat-connection-status ${isConnected ? 'connected' : 'disconnected'}`;
+        statusIndicator.style.cssText = `
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: ${isConnected ? '#4CAF50' : '#f44336'};
+        `;
         
         const header = this.element.querySelector('.chat-widget-header');
         const existingStatus = header.querySelector('.chat-connection-status');
@@ -55,12 +59,18 @@ class ChatWidget {
         header.appendChild(statusIndicator);
     }
 
+    // Message sending
     async sendMessage() {
         const text = this.input.value.trim();
         if (!text) return;
 
+        // Add message to chat
         this.addMessage(text, 'user');
+        
+        // Clear input
         this.input.value = '';
+
+        // Show typing indicator
         this.showTypingIndicator();
 
         try {
@@ -77,6 +87,7 @@ class ChatWidget {
                 })
             });
 
+            // Remove typing indicator
             this.removeTypingIndicator();
 
             if (!response.ok) {
@@ -110,51 +121,169 @@ class ChatWidget {
     }
 
     initialize() {
-        this.loadStyles();
+        // Create and inject CSS
+        this.injectStyles();
+        
+        // Create DOM elements
         this.createWidget();
+        
+        // Bind events
         this.bindEvents();
-        this.applyTheme();
     }
 
-    loadStyles() {
-        // Check if styles are already loaded
-        if (!document.getElementById('chat-widget-styles')) {
-            const link = document.createElement('link');
-            link.id = 'chat-widget-styles';
-            link.rel = 'stylesheet';
-            link.href = 'https://cdn.example.com/chat-widget.css'; // Replace with your actual CDN URL
-            document.head.appendChild(link);
-        }
-    }
+    injectStyles() {
+        const styles = `
+            .chat-widget {
+                position: fixed;
+                ${this.options.position.includes('bottom') ? 'bottom: 20px;' : 'top: 20px;'}
+                ${this.options.position.includes('right') ? 'right: 20px;' : 'left: 20px;'}
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                z-index: 999999;
+            }
 
-    applyTheme() {
-        const themeStyles = document.createElement('style');
-        themeStyles.textContent = `
-            .chat-widget-button { background-color: ${this.options.theme.primary}; }
-            .chat-widget-icon { fill: ${this.options.theme.secondary}; }
-            .chat-widget-header { 
-                background: ${this.options.theme.primary}; 
-                color: ${this.options.theme.secondary}; 
+            .chat-widget-button {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background-color: ${this.options.theme.primary};
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: transform 0.3s ease;
             }
-            .chat-widget-container { background: ${this.options.theme.secondary}; }
-            .chat-widget-input button { 
-                background: ${this.options.theme.primary}; 
-                color: ${this.options.theme.secondary}; 
+
+            .chat-widget-button:hover {
+                transform: scale(1.1);
             }
-            .chat-message-user { 
-                background: ${this.options.theme.primary}; 
-                color: ${this.options.theme.secondary}; 
+
+            .chat-widget-icon {
+                width: 30px;
+                height: 30px;
+                fill: ${this.options.theme.secondary};
             }
-            .chat-message-bot { color: ${this.options.theme.text}; }
+
+            .chat-widget-container {
+                position: absolute;
+                ${this.options.position.includes('bottom') ? 'bottom: 80px;' : 'top: 80px;'}
+                ${this.options.position.includes('right') ? 'right: 0;' : 'left: 0;'}
+                width: 350px;
+                height: 500px;
+                background: ${this.options.theme.secondary};
+                border-radius: 12px;
+                box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+                display: none;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            .chat-widget-header {
+                padding: 20px;
+                background: ${this.options.theme.primary};
+                color: ${this.options.theme.secondary};
+            }
+
+            .chat-widget-messages {
+                flex: 1;
+                overflow-y: auto;
+                padding: 20px;
+            }
+
+            .chat-widget-input {
+                padding: 20px;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                display: flex;
+            }
+
+            .chat-widget-input input {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                border-radius: 20px;
+                margin-right: 10px;
+                outline: none;
+            }
+
+            .chat-widget-input button {
+                padding: 10px 20px;
+                background: ${this.options.theme.primary};
+                color: ${this.options.theme.secondary};
+                border: none;
+                border-radius: 20px;
+                cursor: pointer;
+            }
+
+            .chat-message {
+                margin: 10px 0;
+                padding: 10px 15px;
+                border-radius: 15px;
+                max-width: 80%;
+                word-wrap: break-word;
+            }
+
+            .chat-message-user {
+                background: ${this.options.theme.primary};
+                color: ${this.options.theme.secondary};
+                margin-left: auto;
+            }
+
+            .chat-message-bot {
+                background: #f0f0f0;
+                color: ${this.options.theme.text};
+            }
+
+            .chat-connection-status {
+                transition: background-color 0.3s ease;
+            }
+            .chat-connection-status.connected {
+                box-shadow: 0 0 4px #4CAF50;
+            }
+            .chat-connection-status.disconnected {
+                box-shadow: 0 0 4px #f44336;
+            }
+
+            .chat-typing-indicator {
+                background: #f0f0f0 !important;
+                padding: 15px !important;
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .chat-typing-indicator span {
+                height: 8px;
+                width: 8px;
+                background: #90949c;
+                display: block;
+                border-radius: 50%;
+                opacity: 0.4;
+                margin: 0 2px;
+                animation: typing 1s infinite ease-in-out;
+            }
+
+            .chat-typing-indicator span:nth-child(1) { animation-delay: 200ms; }
+            .chat-typing-indicator span:nth-child(2) { animation-delay: 300ms; }
+            .chat-typing-indicator span:nth-child(3) { animation-delay: 400ms; }
+
+            @keyframes typing {
+                0% { transform: translateY(0px); }
+                28% { transform: translateY(-6px); }
+                44% { transform: translateY(0px); }
+            }
         `;
-        document.head.appendChild(themeStyles);
+
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = styles;
+        document.head.appendChild(styleSheet);
     }
 
     createWidget() {
+        // Create main container
         this.element = document.createElement('div');
         this.element.className = 'chat-widget';
-        this.element.setAttribute('data-position', this.options.position);
 
+        // Create chat button
         const button = document.createElement('div');
         button.className = 'chat-widget-button';
         button.innerHTML = `
@@ -163,6 +292,7 @@ class ChatWidget {
             </svg>
         `;
 
+        // Create chat container
         const container = document.createElement('div');
         container.className = 'chat-widget-container';
         container.innerHTML = `
@@ -180,23 +310,28 @@ class ChatWidget {
         this.element.appendChild(button);
         document.body.appendChild(this.element);
 
+        // Store references to DOM elements
         this.container = container;
         this.messagesContainer = container.querySelector('.chat-widget-messages');
         this.input = container.querySelector('input');
         this.sendButton = container.querySelector('button');
 
+        // Add initial greeting
         this.addMessage(this.options.greeting, 'bot');
     }
 
     bindEvents() {
+        // Toggle chat on button click
         this.element.querySelector('.chat-widget-button').addEventListener('click', () => {
             this.toggleChat();
         });
 
+        // Send message on button click
         this.sendButton.addEventListener('click', () => {
             this.sendMessage();
         });
 
+        // Send message on enter key
         this.input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.sendMessage();
@@ -213,8 +348,10 @@ class ChatWidget {
     }
 
     getSessionId() {
+        // Get existing session ID or create new one
         let sessionId = localStorage.getItem('chatWidgetSessionId');
         if (!sessionId) {
+            // Generate a UUID v4-like session ID
             sessionId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                 const r = Math.random() * 16 | 0;
                 const v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -236,6 +373,7 @@ class ChatWidget {
         this.messages.push({ text, sender, timestamp: new Date() });
     }
 
+    // Add typing indicator
     showTypingIndicator() {
         const indicator = document.createElement('div');
         indicator.className = 'chat-message chat-message-bot chat-typing-indicator';
@@ -252,7 +390,7 @@ class ChatWidget {
     }
 }
 
-// Create minified version
+// Export for both ES modules and CommonJS
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = ChatWidget;
 } else if (typeof define === 'function' && define.amd) {
