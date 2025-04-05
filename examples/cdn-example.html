@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Widget CDN Example</title>
     
-    <!-- Chat Widget CSS from CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AgilistTim/closed.by_Chat@v1.0.0/dist/chat-widget.min.css">
+    <!-- Chat Widget CSS -->
+    <link rel="stylesheet" href="https://agilisttim.github.io/closed.by_Chat/dist/chat-widget.min.css">
     
     <style>
         body {
@@ -96,10 +96,10 @@
             <h2>Implementation</h2>
             <p>To add this chat widget to your website, include these two lines in your HTML:</p>
             <pre><code>&lt;!-- In the &lt;head&gt; --&gt;
-&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AgilistTim/closed.by_Chat@v1.0.0/dist/chat-widget.min.css"&gt;
+&lt;link rel="stylesheet" href="https://agilisttim.github.io/closed.by_Chat/dist/chat-widget.min.css"&gt;
 
 &lt;!-- Before &lt;/body&gt; --&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/AgilistTim/closed.by_Chat@v1.0.0/dist/chat-widget.min.js"&gt;&lt;/script&gt;</code></pre>
+&lt;script src="https://agilisttim.github.io/closed.by_Chat/dist/chat-widget.min.js"&gt;&lt;/script&gt;</code></pre>
             
             <p>Then initialize the widget:</p>
             <pre><code>const chatWidget = new ChatWidget({
@@ -110,51 +110,76 @@
         text: '#000000'
     },
     title: 'Chat With Us',
-    greeting: 'Hello! 👋 How can I help you today?',
+    greeting: 'Hello! �� How can I help you today?',
     placeholder: 'Type your message...',
     endpoint: 'your-webhook-url'
 });</code></pre>
         </div>
     </div>
 
-    <!-- Chat Widget JS from CDN -->
-    <script src="https://cdn.jsdelivr.net/gh/AgilistTim/closed.by_Chat@v1.0.0/dist/chat-widget.min.js"></script>
+    <!-- Chat Widget JS with fallback -->
     <script>
-        // Initialize the chat widget
-        const chatWidget = new ChatWidget({
-            position: 'bottom-right',
-            theme: {
-                primary: '#2196F3',
-                secondary: '#ffffff',
-                text: '#000000'
-            },
-            title: 'Chat With Us',
-            greeting: 'Hello! 👋 How can I help you today?',
-            placeholder: 'Type your message...',
-            endpoint: 'https://closedbyrick.app.n8n.cloud/webhook/9147e53d-f8f7-4ade-8336-633759855053/chat'
-        });
-
-        // Function to change the widget theme
-        function changeTheme(color) {
-            chatWidget.updateTheme({
-                primary: color,
-                secondary: '#ffffff',
-                text: '#000000'
-            });
+        // Function to load script with fallback
+        function loadScript(url, fallbackUrl, callback) {
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = url;
+            script.onerror = function() {
+                if (fallbackUrl) {
+                    console.log('Primary CDN failed, trying fallback...');
+                    var fallbackScript = document.createElement('script');
+                    fallbackScript.type = 'text/javascript';
+                    fallbackScript.src = fallbackUrl;
+                    fallbackScript.onload = callback;
+                    document.body.appendChild(fallbackScript);
+                }
+            };
+            script.onload = callback;
+            document.body.appendChild(script);
         }
 
-        // Optional: Event listeners for demonstration
-        chatWidget.on('message_sent', (message) => {
-            console.log('Message sent:', message);
-        });
+        // Load the chat widget script
+        loadScript(
+            'https://agilisttim.github.io/closed.by_Chat/dist/chat-widget.min.js',
+            'https://cdn.jsdelivr.net/gh/AgilistTim/closed.by_Chat@v1.0.0/dist/chat-widget.min.js',
+            function() {
+                // Initialize the chat widget
+                const chatWidget = new ChatWidget({
+                    position: 'bottom-right',
+                    theme: {
+                        primary: '#2196F3',
+                        secondary: '#ffffff',
+                        text: '#000000'
+                    },
+                    title: 'Chat With Us',
+                    greeting: 'Hello! 👋 How can I help you today?',
+                    placeholder: 'Type your message...',
+                    endpoint: 'https://closedbyrick.app.n8n.cloud/webhook/9147e53d-f8f7-4ade-8336-633759855053/chat'
+                });
 
-        chatWidget.on('message_received', (message) => {
-            console.log('Message received:', message);
-        });
+                // Function to change the widget theme
+                window.changeTheme = function(color) {
+                    chatWidget.updateTheme({
+                        primary: color,
+                        secondary: '#ffffff',
+                        text: '#000000'
+                    });
+                };
 
-        chatWidget.on('message_error', (error) => {
-            console.error('Error:', error);
-        });
+                // Optional: Event listeners for demonstration
+                chatWidget.on('message_sent', (message) => {
+                    console.log('Message sent:', message);
+                });
+
+                chatWidget.on('message_received', (message) => {
+                    console.log('Message received:', message);
+                });
+
+                chatWidget.on('message_error', (error) => {
+                    console.error('Error:', error);
+                });
+            }
+        );
     </script>
 </body>
 </html> 
